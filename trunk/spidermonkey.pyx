@@ -170,7 +170,10 @@ cdef extern from "jsapi.h":
         JSXDRObjectOp xdrObject
         JSHasInstanceOp hasInstance
         JSMarkOp mark
-        jsword spare
+        # This is actually a function pointer; see MDC.  However, it's
+        # optional and we're not using it, so I'm just setting it to a
+        # void pointer. -AV
+        void *reserveSlots
 
     cdef JSBool JS_PropertyStub(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
     cdef JSBool JS_EnumerateStub(JSContext *cx, JSObject *obj)
@@ -248,7 +251,7 @@ cdef extern from "jsapi.h":
         JS_CLASS_NO_INSTANCE
         JSCLASS_HAS_PRIVATE
 
-    cdef JSClass *JS_GetClass(JSObject *obj)
+    cdef JSClass *JS_GetClass(JSContext *cx, JSObject *obj)
 
     cdef JSBool JSVAL_IS_OBJECT(jsval v)
     cdef JSBool JSVAL_IS_NUMBER(jsval v)
@@ -712,7 +715,7 @@ cdef class ProxyClass:
         self.jsc.xdrObject = NULL
         self.jsc.hasInstance = NULL
         self.jsc.mark = NULL
-        self.jsc.spare = 0
+        self.jsc.reserveSlots = NULL
 
         if bind_constructor:
             if JS_InitClass(
@@ -800,7 +803,7 @@ cdef JSBool bound_method_cb(JSContext *cx, JSObject *obj, uintN argc,
     cdef ProxyObject proxy_obj
 
     func = JS_ValueToFunction(cx, argv[-2])
-    jsclass = JS_GetClass(obj)
+    jsclass = JS_GetClass(cx, obj)
 
     try:
         context = get_context(cx)
@@ -902,7 +905,10 @@ cdef JSBool get_property(JSContext *cx, JSObject *obj, jsval id, jsval *vp):
                 else:
                     vp[0] = JS_from_Py(cx, obj, attr)
         else:
-            assert False
+            # TODO: This could be a bug in SpiderMonkey, as a
+            # PropertyOp is never supposed to be called with an id
+            # that's something other than an int or a string.
+            vp[0] = JSVAL_VOID
         return JS_TRUE
     except:
         return report(cx)
@@ -937,7 +943,7 @@ cdef JSBool set_property(JSContext *cx, JSObject *obj, jsval id, jsval *vp):
                     except:
                         pass
         else:
-            assert False
+            raise AssertionError("Didn't expect key: %s" % key)
         return JS_TRUE
     except:
         return report(cx)
@@ -1091,7 +1097,7 @@ cdef dict_from_JShash(JSContext *cx, JSObject *hash):
             key = JSVAL_TO_INT(jskey)
             JS_GetElement(cx, hash, key, &jsvalue)
         else:
-            assert False, "can't happen"
+            raise AssertionError("can't happen")
 
         if JSVAL_IS_PRIMITIVE(jsvalue):
             d[key] = Py_from_JSprimitive(jsvalue)
@@ -1141,7 +1147,10 @@ cdef Py_from_JSprimitive(jsval v):
     elif JSVAL_IS_STRING(v):
         return JS_GetStringBytes(JSVAL_TO_STRING(v))
     elif JSVAL_IS_BOOLEAN(v):
-        return bool(JSVAL_TO_BOOLEAN(v))
+        if JSVAL_TO_BOOLEAN(v):
+            return True
+        else:
+            return False
     else:
         raise SystemError("unknown primitive type")
 
