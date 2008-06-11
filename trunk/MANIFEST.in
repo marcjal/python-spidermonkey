@@ -1,8 +1,9 @@
 include MANIFEST.in
 include COPYING
-include README.txt
+include README
 include ChangeLog
 include *.pyx
 include setup.py
 include test.py
 include support.c
+include spidermonkey.c
