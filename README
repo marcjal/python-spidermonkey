@@ -41,7 +41,14 @@ From the JSAPI User Guide:
   functions, convert Javascript data from one type to another, create
   objects, and so on.
 
-Creating a ``Context`` instance is done like so:
+In Firefox, for instance, a different context is used for each webpage
+you view.  A separate context is even created for each physical
+browser window, because much of Firefox's functionality is actually
+written in Javascript.  Contexts can have their own security
+policies associated with them, and objects can be shared between
+multiple contexts.
+
+Creating a context in Python-Spidermonkey is done like so:
 
   >>> cx = rt.new_context()
 
