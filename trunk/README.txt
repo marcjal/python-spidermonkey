@@ -119,7 +119,9 @@ The module has a test suite.  Just run::
   python test.py
 
 Note that one of the tests currently prints out a Javascript error
-message.  This isn't a test failure (though it is a bug).
+message.  This isn't a test failure (though it is a `bug`_).
+
+.. _`bug`: http://code.google.com/p/python-spidermonkey/issues/detail?id=1
 
 Acknowledgements
 ================
