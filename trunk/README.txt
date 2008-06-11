@@ -1,114 +1,129 @@
+===================
+Python-Spidermonkey
+===================
 
-   [1]SourceForge.net Logo 
+This Python module allows for the implementation of Javascript?
+classes, objects and functions in Python, as well as the evaluation
+and calling of Javascript scripts and functions. It borrows heavily
+from Claes Jacobssen's ``Javascript`` Perl module, which in turn is
+based on Mozilla's ``PerlConnect`` Perl binding.
 
-                                 spidermonkey
+This code was originally written by John J. Lee in 2003.  After being
+unmaintained for a number of years, it was subsequently picked up by
+Atul Varma in 2008.
 
-   Python/JavaScript bridge module, making use of Mozilla's
-   [2]spidermonkey JavaScript implementation. Allows implementation of
-   JavaScript classes, objects and functions in Python, and evaluation
-   and calling of JavaScript scripts and functions respectively. Borrows
-   heavily from Claes Jacobssen's Javascript Perl module, in turn based
-   on Mozilla's 'PerlConnect' Perl binding.
+Usage
+=====
 
-   Example of a few of the features:
-from spidermonkey import Runtime
-rt = Runtime()
-cx = rt.new_context()
+The first thing you'll want to do is create a ``Runtime`` instance,
+which encapsulates a ``JSRuntime`` object from Spidermonkey.  From the
+`JSAPI User Guide`_:
 
-class foo:
-    def hello(self):
-        print "Hello, JavaScript world!"
+  A ``JSRuntime``, or *runtime*, is the space in which the Javascript
+  variables, objects, scripts, and contexts used by your application
+  are allocated. Every ``JSContext`` and every object in an
+  application lives within a ``JSRuntime``. They cannot travel to
+  other runtimes or be shared across runtimes. Most applications only
+  need one runtime.
 
-cx.bind_class(foo, bind_constructor=True)
-f = cx.eval_script("""var f = new foo();
-f.hello();
-f; // script return value
-""")
-print f  # script return value
-f.hello()
+Creating the ``Runtime`` instance is straightforward:
 
-def repeat(x): return x*2
-cx.bind_callable("repeat", repeat)
+  >>> from spidermonkey import Runtime
+  >>> rt = Runtime()
 
-print cx.eval_script("""
-var r = ["foo", {"bar": 2.3, "spam": [1,2,3]}];
-repeat(r);
-""")
+You'll then want to use the ``Runtime`` to create a ``Context``
+instance, which encapsulates a ``JSContext`` object from Spidermonkey.
+From the JSAPI User Guide:
 
-   [3]Python 2.3 and [4]spidermonkey 1.5 are required (earlier versions
-   may work, but are untested). Currently [5]Pyrex is required to build
-   it (probably this won't stay a requirement - I will just include the C
-   file that results from the Pyrex compilation).
+  A ``JSContext``, or *context*, is like a little machine that can do
+  many things involving Javascript code and objects. It can compile
+  and execute scripts, get and set object properties, call Javascript
+  functions, convert Javascript data from one type to another, create
+  objects, and so on.
 
-   Thanks to Brendan Eich for help with several spidermonkey issues (and
-   for all his Mozilla work), and to Erwin on the freenode #c IRC channel
-   for gdb tips &c.
+Creating a ``Context`` instance is done like so:
 
-Download
+  >>> cx = rt.new_context()
 
-   For installation instructions, see the INSTALL file included in the
-   distribution.
+Now that you've got a context, you can do lots of things, like
+evaluating arbitrary Javascript expressions and using their results in
+Python code:
 
-   Development release. This is an alpha release: there are known bugs,
-   and interfaces may change.
-     * [6]spidermonkey-0.0.1a.tar.gz
-     * [7]spidermonkey-0_0_1a.zip
-     * [8]Change Log (included in distribution)
+  >>> cx.eval_script("1 + 2") + 3
+  6
 
-See also
+We can create classes in Python and access them in Javascript, too:
 
-   [9]PyXPCOM (see also [10]here).
+  >>> class Foo:
+  ...   def hello(self):
+  ...     print "Hello, Javascript world!"
+  >>> cx.bind_class(Foo, bind_constructor=True)
+  >>> cx.eval_script("var f = new Foo(); f.hello();")
+  Hello, Javascript world!
 
-FAQs
+We can also get back objects from Javascript and use them:
 
-     * What license?
-       The [11]GPL.
-     * What platforms does it work on?
-       It should work on any platform where spidermonkey runs. I've only
-       tested on Linux, though.
-     * Why?
-       I wanted a way to interpret JavaScript with minimal dependencies,
-       and to easily expose a Python DOM to JavaScript. This is used by
-       [12]DOMForm.
+  >>> f = cx.eval_script("f;")
+  >>> f.hello()
+  Hello, Javascript world!
 
-   [13]John J. Lee, October 2003.
+.. _`JSAPI User Guide`: http://developer.mozilla.org/en/docs/JSAPI_User_Guide
 
-   [14]Home
-   [15]ClientCookie
-   [16]ClientForm
-   [17]DOMForm
-   spidermonkey
-   [18]ClientTable
-   [19]General FAQs
-   [20]1.5.2 urllib2.py
-   [21]1.5.2 urllib.py
-   [22]Other stuff
-   [23]Download
-   [24]FAQs
+Limitations
+===========
 
-References
+The module currently has a number of features that still need to be
+implemented.  For instance, it's not yet possible to call a function
+defined in Javascript:
 
-   1. http://sourceforge.net/
-   2. http://www.mozilla.org/js/spidermonkey/
-   3. http://www.python.org/download/
-   4. http://www.mozilla.org/js/spidermonkey/
-   5. http://www.cosc.canterbury.ac.nz/~greg/python/Pyrex/
-   6. http://wwwsearch.sourceforge.net/spidermonkey/src/spidermonkey-0.0.1a.tar.gz
-   7. http://wwwsearch.sourceforge.net/spidermonkey/src/spidermonkey-0_0_1a.zip
-   8. http://wwwsearch.sourceforge.net/spidermonkey/src/ChangeLog.txt
-   9. http://pyxpcom.mozdev.org/
-  10. http://aspn.activestate.com/ASPN/Downloads/Komodo/PyXPCOM/
-  11. http://www.opensource.org/licenses/gpl-license.php
-  12. http://wwwsearch.sourceforge.net/DOMForm/
-  13. mailto:jjl@pobox.com
-  14. http://wwwsearch.sourceforge.net/
-  15. http://wwwsearch.sourceforge.net/ClientCookie/
-  16. http://wwwsearch.sourceforge.net/ClientForm/
-  17. http://wwwsearch.sourceforge.net/DOMForm/
-  18. http://wwwsearch.sourceforge.net/ClientTable/
-  19. http://wwwsearch.sourceforge.net/bits/clientx.html
-  20. http://wwwsearch.sourceforge.net/bits/urllib2_152.py
-  21. http://wwwsearch.sourceforge.net/bits/urllib_152.py
-  22. http://wwwsearch.sourceforge.net/#other
-  23. http://wwwsearch.sourceforge.net/spidermonkey/#download
-  24. http://wwwsearch.sourceforge.net/spidermonkey/#faq
+  >>> cx.eval_script("function foo(x) { return x + 1; }; foo;")
+  {'prototype': {}}
+
+Errors in Javascript code also don't produce particularly helpful
+tracebacks:
+
+  >>> cx.eval_script("3 + undefinedVariable")
+  Traceback (most recent call last):
+  ...
+  JSError: can't evaluate Javascript script
+
+Installation
+============
+
+1. Check out the Python-Spidermonkey module from the `SVN repository`_.
+
+2. Download the `XULRunner SDK`_.
+
+3. Extract the SDK to a directory and set the ``MOZSDKDIR`` environment
+   variable to point to it, e.g.::
+
+     export MOZSDKDIR=/path/to/sdk
+
+4. From the root of your checkout, run::
+
+     python setup.py build
+
+   Don't worry about the compiler warnings.  Then, with appropriate
+   permissions, run::
+
+     python setup.py install
+
+.. _`SVN repository`: http://code.google.com/p/python-spidermonkey/source/checkout
+.. _`XULRunner SDK`: http://developer.mozilla.org/en/docs/Gecko_SDK
+
+Testing
+=======
+
+The module has a test suite.  Just run::
+
+  python test.py
+
+Note that one of the tests currently prints out a Javascript error
+message.  This isn't a test failure (though it is a bug).
+
+Acknowledgements
+================
+
+Thanks to Brendan Eich for help with several Spidermonkey issues (and
+for all his Mozilla work), and to Erwin on the freenode ``#c`` IRC
+channel for gdb tips.
