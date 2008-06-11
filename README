@@ -12,8 +12,8 @@ This code was originally written by John J. Lee in 2003.  After being
 unmaintained for a number of years, it was subsequently picked up by
 Atul Varma in 2008.
 
-Usage
-=====
+Tutorial
+========
 
 The first thing you'll want to do is create a ``Runtime`` instance,
 which encapsulates a ``JSRuntime`` object from Spidermonkey.  From the
