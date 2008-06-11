@@ -1,0 +1,42 @@
+Installation instructions for spidermonkey Python / Javascript bridge
+module.
+
+The build process is a bit messy, sorry.  I'll probably bundle the
+spidermonkey code eventually (and I suppose Pyrex shouldn't be
+required, either).  I've not tested on any platform other than Linux,
+but this should work on any platform where spidermonkey compiles.
+
+1. Get spidermonkey and compile it (I'm using 1.5).  Install the
+   header files and libjs.so somewhere sensible (eg. *.h files in
+   /usr/local/include/js, libjs.so in /usr/local/lib).  Remember to
+   install the header files from the platform-specific build
+   directory here too (ie. the *.h files from eg. Linux_All_DBG.OBJ).
+   To allow your system to find libjs.so, you may need to do
+   something like running ldconfig (perhaps after editing
+   /etc/ld.so.conf), or setting the LD_LIBRARY_PATH environment
+   variable.
+
+2. Edit setup.cfg to suit your system (or supply appropriate command
+   line arguments).  In particular, you need to edit include_dirs to
+   say where you installed the spidermonkey headers.
+
+3. Get Pyrex and install it (I'm using 0.8.2).
+
+4. python setup.py build
+
+   (don't worry about the compiler warnings).  Then, with appropriate
+   permissions:
+
+   python setup.py install
+
+
+To test:
+
+python test.py
+
+
+Note that one of the tests currently prints out a JS error message.
+This isn't a test failure (though it is a bug).
+
+
+John J. Lee <jjl@pobox.com>, October 2003.
