@@ -10,8 +10,17 @@ env = Environment(
     LIBPATH = ["${MOZDISTDIR}/lib"],
 )
 
-env.Command("spidermonkey.c", "spidermonkey.pyx",
-            "pyrexc -r -o $TARGET $SOURCE")
+try:
+    __import__("Pyrex")
+
+    # We have Pyrex, so go ahead and add a target to generate
+    # spidermonkey.c.
+    env.Command("spidermonkey.c", "spidermonkey.pyx",
+                "pyrexc -r -o $TARGET $SOURCE")
+except ImportError:
+    # We don't have Pyrex, so we'll use the pre-generated
+    # spidermonkey.c.
+    pass
 
 env.LoadableModule(
     source = "spidermonkey.c",
