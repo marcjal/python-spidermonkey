@@ -7,7 +7,7 @@ try:
     # the MACOSX_DEPLOYMENT_TARGET to something that may be
     # inaccurate.  So we'll make sure that it's set to whatever it was
     # before we imported Pyrex.
-    oldTarget = os.environ["MACOSX_DEPLOYMENT_TARGET"]
+    oldTarget = os.environ.get("MACOSX_DEPLOYMENT_TARGET", "")
 
     from Pyrex.Distutils import build_ext
 
@@ -18,13 +18,14 @@ except ImportError:
     from distutils.command.build_ext import build_ext
     sources = ["spidermonkey.c"]
 
-if not os.environ.has_key("MOZSDKDIR"):
-    print ("Please set the MOZSDKDIR environment variable "
-           "to the location of your XULRunner SDK before "
-           "running this script.")
-    sys.exit(1)
+if "build" in sys.argv or "build_ext" in sys.argv:
+    if not os.environ.has_key("MOZSDKDIR"):
+        print ("Please set the MOZSDKDIR environment variable "
+               "to the location of your XULRunner SDK before "
+               "running this script.")
+        sys.exit(1)
 
-MOZ_SDK_DIR = os.environ["MOZSDKDIR"]
+MOZ_SDK_DIR = os.environ.get("MOZSDKDIR", "")
 
 ext = Extension(
     "spidermonkey",
