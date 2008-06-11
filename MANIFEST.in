@@ -1,8 +1,5 @@
 include MANIFEST.in
 include COPYING
-include INSTALL
-include README.html.in
-include README.html
 include README.txt
 include ChangeLog
 include *.pyx
