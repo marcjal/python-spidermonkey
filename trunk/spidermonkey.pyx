@@ -251,7 +251,7 @@ cdef extern from "jsapi.h":
         JS_CLASS_NO_INSTANCE
         JSCLASS_HAS_PRIVATE
 
-    cdef JSClass *JS_GetClass(JSContext *cx, JSObject *obj)
+    cdef JSClass *JS_GetClass(JSObject *obj)
 
     cdef JSBool JSVAL_IS_OBJECT(jsval v)
     cdef JSBool JSVAL_IS_NUMBER(jsval v)
@@ -803,7 +803,7 @@ cdef JSBool bound_method_cb(JSContext *cx, JSObject *obj, uintN argc,
     cdef ProxyObject proxy_obj
 
     func = JS_ValueToFunction(cx, argv[-2])
-    jsclass = JS_GetClass(cx, obj)
+    jsclass = JS_GetClass(obj)
 
     try:
         context = get_context(cx)
