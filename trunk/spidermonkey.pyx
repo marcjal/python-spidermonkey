@@ -904,11 +904,12 @@ cdef JSBool get_property(JSContext *cx, JSObject *obj, jsval id, jsval *vp):
                     pass
                 else:
                     vp[0] = JS_from_Py(cx, obj, attr)
-        else:
-            # TODO: This could be a bug in SpiderMonkey, as a
-            # PropertyOp is never supposed to be called with an id
-            # that's something other than an int or a string.
+        elif key is None:
+            # It's the magic XML namespace id:
+            # http://mxr.mozilla.org/mozilla/source/js/src/jsapi.h#1382
             vp[0] = JSVAL_VOID
+        else:
+            raise AssertionError("Illegal key: %s" % key)
         return JS_TRUE
     except:
         return report(cx)
