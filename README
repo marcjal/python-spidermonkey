@@ -97,27 +97,10 @@ tracebacks:
 Installation
 ============
 
-Note that this rather cumbersome process will be made simpler very
-soon, as we'll be adding Spidermonkey directly to the source code
-repository.
+Note that at present, installation has only been tested on OS X; it
+should work on Linux, and support for Windows is forthcoming.
 
 * Check out the Python-Spidermonkey module from the `SVN repository`_.
-
-* Download the `XULRunner SDK`_. You'll want to make sure you get a
-  nightly build of Gecko 1.9; also make sure that you get one of the
-  archives with "sdk" in its name--it's the largest archive for its
-  platform.
-
-* Extract the SDK to a directory and set the ``MOZSDKDIR`` environment
-  variable to point to it, e.g.::
-
-    export MOZSDKDIR=/path/to/sdk
-
-* If you're on OS X, you'll need to make sure that your library search
-  path contains the Javascript shared object library.  This can be
-  done via::
-
-    export DYLD_LIBRARY_PATH=${MOZSDKDIR}/lib
 
 * From the root of your checkout, run::
 
@@ -129,7 +112,6 @@ repository.
     python setup.py install
 
 .. _`SVN repository`: http://code.google.com/p/python-spidermonkey/source/checkout
-.. _`XULRunner SDK`: http://developer.mozilla.org/en/docs/Gecko_SDK
 
 Testing
 =======
