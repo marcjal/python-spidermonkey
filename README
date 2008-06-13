@@ -101,7 +101,7 @@ Note that at present, installation has only been tested on OS X; it
 should work on Linux, and support for Windows is forthcoming.
 
 At present, you'll need a C compiler on your system to install this
-extension.
+extension, as well as the `Pyrex`_ package.
 
 * Check out the Python-Spidermonkey module from the `SVN repository`_.
 
@@ -114,6 +114,7 @@ extension.
 
     python setup.py install
 
+.. _`Pyrex`: http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/
 .. _`SVN repository`: http://code.google.com/p/python-spidermonkey/source/checkout
 
 Testing

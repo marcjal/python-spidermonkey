@@ -19,8 +19,8 @@ try:
 
     sources = ["spidermonkey.pyx"]
 except ImportError:
-    from distutils.command.build_ext import build_ext
-    sources = ["spidermonkey.c"]
+    print "You don't seem to have Pyrex installed. Please install it."
+    sys.exit(1)
 
 def _find_obj_dir():
     objdirs = [dirname for dirname
