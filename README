@@ -97,8 +97,8 @@ tracebacks:
 Installation
 ============
 
-Note that at present, installation has only been tested on OS X; it
-should work on Linux, and support for Windows is forthcoming.
+Note that at present, installation has only been tested on OS X and
+64-bit Ubuntu Linux; support for Windows is forthcoming.
 
 At present, you'll need a C compiler on your system to install this
 extension, as well as the `Pyrex`_ package.
