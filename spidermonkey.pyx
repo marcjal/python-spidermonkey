@@ -68,6 +68,9 @@ from cStringIO import StringIO
 from types import FloatType, IntType, LongType, DictType, LambdaType, \
      MethodType, FunctionType, StringType, StringTypes, ListType, TupleType
 
+# TODO: A number of these typedefs are wrong, which could cause
+# problems in the future.
+
 ctypedef int jsuint
 ctypedef int jsint
 ctypedef int uint8
@@ -76,7 +79,10 @@ ctypedef int uint32
 ctypedef int uintN
 ctypedef int size_t
 ctypedef int JSBool
-ctypedef int jsval
+IF UNAME_MACHINE == "x86_64":
+    ctypedef long jsval
+ELSE:
+    ctypedef int jsval
 ctypedef int jsid
 ctypedef int jsword
 
