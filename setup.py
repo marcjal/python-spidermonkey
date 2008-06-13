@@ -92,7 +92,7 @@ Javascript Perl module, in turn based on Mozilla's 'PerlConnect' Perl binding.
 """,
       ext_modules =  [Extension("spidermonkey",
                                 sources=sources,
-                                libraries=["js"])],
+                                libraries=["js", "stdc++"])],
       cmdclass = {'build_ext': spidermonkey_build_ext,
                   'clean': spidermonkey_clean,
                   'install': spidermonkey_install}
