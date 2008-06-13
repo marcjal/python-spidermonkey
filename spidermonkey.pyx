@@ -259,6 +259,8 @@ cdef extern from "jsapi.h":
 
     cdef JSClass *JS_GetClass(JSObject *obj)
 
+    cdef jsval JS_ARGV_CALLEE(jsval *argv)
+
     cdef JSBool JSVAL_IS_OBJECT(jsval v)
     cdef JSBool JSVAL_IS_NUMBER(jsval v)
     cdef JSBool JSVAL_IS_INT(jsval v)
@@ -775,7 +777,7 @@ cdef JSBool constructor_cb(JSContext *cx, JSObject *obj,
     cdef int arg
     cdef ProxyObject object
 
-    func = JS_ValueToFunction(cx, argv[-2])
+    func = JS_ValueToFunction(cx, JS_ARGV_CALLEE(argv))
     if func == NULL:
         msg = "couldn't get JS constructor"
         JS_ReportError(cx, msg)
@@ -808,7 +810,7 @@ cdef JSBool bound_method_cb(JSContext *cx, JSObject *obj, uintN argc,
     cdef JSClass *jsclass
     cdef ProxyObject proxy_obj
 
-    func = JS_ValueToFunction(cx, argv[-2])
+    func = JS_ValueToFunction(cx, JS_ARGV_CALLEE(argv))
     jsclass = JS_GetClass(obj)
 
     try:
@@ -964,8 +966,7 @@ cdef JSBool function_cb(JSContext *cx, JSObject *obj,
     cdef int i
     cdef char *name
 
-    # XXX is this argv[-2] documented anywhere??
-    jsfunc = JS_ValueToFunction(cx, argv[-2])
+    jsfunc = JS_ValueToFunction(cx, JS_ARGV_CALLEE(argv))
     if jsfunc == NULL:
         return JS_FALSE
     name = JS_GetFunctionName(jsfunc)
