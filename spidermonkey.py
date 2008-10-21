@@ -555,7 +555,7 @@ JSExceptionState = JSExceptionState
 
 JSInt64 = c_longlong
 
-libsmjs = CDLL('libsmjs.so')
+libsmjs = CDLL('/usr/lib/firefox/libmozjs.so')
 JSLL_MaxInt = libsmjs.JSLL_MaxInt
 JSLL_MaxInt.restype = JSInt64
 JSLL_MaxInt.argtypes = []
@@ -2072,7 +2072,8 @@ class Context:
 					else:
 						vp[0] = JS_from_Py(self, obj, attr)
 			else:
-				assert False
+				#assert False, str(key)
+				return JS_FALSE
 			return JS_TRUE
 		except:
 			self.report()
