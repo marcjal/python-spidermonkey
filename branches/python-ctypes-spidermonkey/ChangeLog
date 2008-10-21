@@ -1,6 +1,11 @@
 This isn't really in proper GNU ChangeLog format, it just happens to
 look that way.
 
+2008-10-20 Tim Dedischew <humbletim@gmail.com>
+	* Imported Leonard Ritter's ctypes version from:
+	  http://svn.zeitherrschaft.org/neuro/browser/python-spidermonkey
+	* Updated the documentation to reflect proposed direction
+	
 2008-06-10 Atul Varma <varmaa@gmail.com>
 	* Fixed the module to work with the latest SpiderMonkey (1.7)
 	  and Pyrex (0.9.8).
